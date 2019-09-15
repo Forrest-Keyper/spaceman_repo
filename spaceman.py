@@ -33,6 +33,27 @@ class spaceGame:
         self.name = self
         self.launch_word = launch_word
         self.launch_word_list = launch_word_list
+        self.guess_number = 0
+        self.guesses = []
+
+    def launch_guess(self):
+        guess_wordListed = game.launch_word_list
+        guessescount = game.guess_number
+        guesses = game.guesses
+
+        guesses[guessescount] = input("What letter would you like to guess? ({}/7 guesses remaining) ").format(guessescount)
+        guessescount += 1
+
+        for i in guess_wordListed:
+            if guesses[guessescount] == guess_wordListed[i]:
+                print("hit line 46")
+                guess_output = guess_wordListed[i]
+
+        return
+
+
+
+
 
 
 
@@ -57,3 +78,7 @@ gameLoad()
 
 game = spaceGame(launch_word, launch_word_list)
 test()
+launching = True
+
+while launching:
+    game.launch_guess()
