@@ -1,8 +1,8 @@
 import random
 
 launch_word = None
-blank_counter = 0
-launch_word_list = [blank_counter]
+blank_counter = []
+launch_word_list = []
 def launch_word_load():
     # we'll use this one function to load, split and save our word as a whole word and a list
 
@@ -19,29 +19,38 @@ def launch_word_load():
 
     global launch_word_list
 
-    for item in launch_word:
-        for letter in item:
-            global blank_counter
-            blank_counter += 1
-            launch_word_list.append(letter)
+    for letter in launch_word:
+            launch_word_list.extend(letter)
+
+    for blank in launch_word_list:
+        blank_counter.append('_')
 
     return launch_word
     return launch_word_list
     return blank_counter
 
+# will be used to replace guesses with blanks
 
+def blankify(guessIndex, guess):
+
+    game.launch_word_list[0][guessIndex] = guess
+
+    print(launch_word_list[0])
 
 def check_wordList(guess):
 
     if  guess in launch_word_list:
-        guessIndex = [launch_word_list.append(guess)]
+        # game.guessIndex.append(launch_word_list.index(guess))
+        print("game.guessIndex: ")
+        print(game.guessIndex)
+        print("global launch_word_list")
+        print(launch_word_list)
         return True
         #return True
 
     else:
         return False
 
-check_wordList
 def guess():
     launch_word = game.launch_word
     launch_word_list = game.launch_word_list
@@ -49,44 +58,50 @@ def guess():
     prev_guessCount = game.guess_number
     new_guessCount = game.guess_number + 1
 
-    guessIndex = prev_guessCount - 1
-    guesses = game.guesses
+    guessIndex = game.guessIndex
+    blankedGuesses = game.blankedWord
+
+    guessNumber = prev_guessCount - 1
 
     print(guessIndex)
-    print(guesses)
 
-    guessing = True
+    guessWrong = 0
 
-    while guessing == True:
+    while guessWrong <= 7:
 
-        guessQuery = input(("What letter would you like to guess? ({}/7 guesses) ").format(prev_guessCount))
-        guess = guessQuery
-        guesses.append(guess)
+            guessQuery = input(("What letter would you like to guess? ({}/7 guesses) ").format(prev_guessCount))
+            guess = str(guessQuery)
+            indexedGuess = int(game.launch_word_list.index(guess))
+            print(guess)
 
-        #print(guess)
 
-        if check_wordList(guess) == True:
-            print("hit line 46")
-            game.guess_number = prev_guessCount
-            print("Correct!")
+            if check_wordList(guess) == True:
 
-        else:
-            print("incorrect")
-            game.guess_number = new_guessCount
+                game.guess_number = prev_guessCount
+                blankedGuesses[indexedGuess].append(guess)
+                print("Correct!")
+                blankify(indexedGuess, guess)
+                game.launch_word_list.pop(indexedGuess)
 
-        print(guess)
-        guessing = False
+
+            else:
+                print(("{} is incorrect").format(guess))
+                # guessIndex.append([1[guess]])
+                game.guess_number = new_guessCount
+                guessWrong += 1
+
+
 
 class spaceGame:
 
     #we'll use classes to make it easer to store our chose words and test number of letters
-    def __init__(self, launch_word, launch_word_list, blanks):
+    def __init__(self, launch_word, launch_word_list, blank_counter):
         self.name = self
         self.launch_word = launch_word
         self.launch_word_list = launch_word_list
-        self.blanks = blanks
+        self.blankedWord = blank_counter
         self.guess_number = 1
-        self.guesses = []
+        self.guessIndex = []
 '''
     def launch_guess(self):
         guess_wordList = game.launch_word_list
@@ -114,7 +129,10 @@ for i in guess_wordList:
 def test():
     print("our launch_word is " + game.launch_word)
     print(game.launch_word_list)
-
+    print(game.blankedWord)
+'''
+    assert
+'''
 
 
 def gameLoad():
