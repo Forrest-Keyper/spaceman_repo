@@ -1,5 +1,7 @@
 import random
 
+guessCount = 0
+
 launch_word = None
 blank_counter = []
 launch_word_list = []
@@ -11,86 +13,80 @@ def launch_word_load():
     words_list = f.readlines()
     f.close()
 
-    word_generate = words_list[0].split(' ')
-    space_word = random.choice(word_generate)
+
+    space_list = words_list[0].split(' ')
+    #space_list = words_list.split(" ")
+    space_word = random.choice(space_list)
 
     global launch_word
     launch_word = space_word
 
-    global launch_word_list
-
-    for letter in launch_word:
-            launch_word_list.extend(letter)
-
-    for blank in launch_word_list:
+    for char in launch_word:
+        launch_word_list.append(char)
+    # this function empowers our intialization of our word as lists to be guessed into
+    for char in launch_word_list:
         blank_counter.append('_')
+
+    #global launch_word_list
 
     return launch_word
     return launch_word_list
     return blank_counter
 
 # will be used to replace guesses with blanks
-
+'''
 def blankify(guessIndex, guess):
 
-    game.launch_word_list[0][guessIndex] = guess
+    game.blankedWord.insert(guessIndex, guess)
+    print(game.blankedWord)
+    #print(launch_word_list[0])
+'''
 
-    print(launch_word_list[0])
+def check_wordList(guessStr):
+    gameList = game.launch_word_list
+    listIndex = gameList.index(guessStr)
+    listIndexFinish = gameList.index(guessStr, listIndex)
 
-def check_wordList(guess):
+    if listIndexFinish > listIndex:
 
-    if  guess in launch_word_list:
+        print("pop two")
+
+        #print(gameList.index(guess[indexedGuess[game.listLength - 1]]))
         # game.guessIndex.append(launch_word_list.index(guess))
-        print("game.guessIndex: ")
-        print(game.guessIndex)
-        print("global launch_word_list")
-        print(launch_word_list)
         return True
-        #return True
 
     else:
+        print("guess not in word")
         return False
 
 def guess():
-    launch_word = game.launch_word
-    launch_word_list = game.launch_word_list
+    global guessCount
 
-    prev_guessCount = game.guess_number
-    new_guessCount = game.guess_number + 1
+    guessQuery = input(("What letter would you like to guess? ({}/7 guesses) ").format(guessCount))
+    guessStr = str(guessQuery)
 
-    guessIndex = game.guessIndex
-    blankedGuesses = game.blankedWord
+    if game.launch_word_list.count(guessStr) > 1:
+        for i in range(0, game.launch_word.count(guessStr)):
+            indexedGuess = int(game.safetyList.index(guessStr))
+            game.launch_word_list.pop(indexedGuess)
+            game.launch_word_list.insert(indexedGuess, '_')
+            game.blankedWord.pop(indexedGuess)
+            game.blankedWord.insert(indexedGuess, guessStr)
 
-    guessNumber = prev_guessCount - 1
+        print("{} is correct!".format(guessStr))
+        print("{}".format(game.blankedWord))
+        return True
 
-    print(guessIndex)
+    elif game.launch_word.count(guessStr) == 1:
+        indexedGuess = int(game.safetyList.index(guessStr))
+        game.blankedWord.pop(indexedGuess)
+        game.blankedWord.insert(indexedGuess, guessStr)
+        # guessIndex.append([1[guess]]
+        return True
 
-    guessWrong = 0
-
-    while guessWrong <= 7:
-
-            guessQuery = input(("What letter would you like to guess? ({}/7 guesses) ").format(prev_guessCount))
-            guess = str(guessQuery)
-            indexedGuess = int(game.launch_word_list.index(guess))
-            print(guess)
-
-
-            if check_wordList(guess) == True:
-
-                game.guess_number = prev_guessCount
-                blankedGuesses[indexedGuess].append(guess)
-                print("Correct!")
-                blankify(indexedGuess, guess)
-                game.launch_word_list.pop(indexedGuess)
-
-
-            else:
-                print(("{} is incorrect").format(guess))
-                # guessIndex.append([1[guess]])
-                game.guess_number = new_guessCount
-                guessWrong += 1
-
-
+    else:
+        guessCount += 1
+        return False
 
 class spaceGame:
 
@@ -99,27 +95,11 @@ class spaceGame:
         self.name = self
         self.launch_word = launch_word
         self.launch_word_list = launch_word_list
+        self.safetyList = launch_word_list
         self.blankedWord = blank_counter
         self.guess_number = 1
-        self.guessIndex = []
-'''
-    def launch_guess(self):
-        guess_wordList = game.launch_word_list
-        guessCount = game.guess_number
-        guessIndex = guessCount - 1
-        guesses = game.guesses
+        self.listLength = len(launch_word_list)
 
-        print(guessIndex)
-        print(guesses)
-        guess = input(("What letter would you like to guess? ({}/7 guesses) ").format(guessCount))
-
-print(guess)
-
-for i in guess_wordList:
-    if guess == guess_wordList[i]:
-        print("hit line 46")
-        guess_output = guess_wordList[i]
-'''
 #chooses a random word and sets it to our launch_word
 
 
@@ -127,16 +107,19 @@ for i in guess_wordList:
 
 
 def test():
+    '''
     print("our launch_word is " + game.launch_word)
-    print(game.launch_word_list)
-    print(game.blankedWord)
-'''
-    assert
-'''
+    print(game.launch_word_list[0])
+    print(game.guessIndex)
 
+    assert
+    '''
+    print(launch_word)
+    print(game.blankedWord)
+    return
 
 def gameLoad():
-    load = launch_word_load()
+    launch_word_load()
     print("Welcome to Spaceman. Try to guess the correct letters to launch the shuttle!")
 
 
@@ -144,10 +127,6 @@ gameLoad()
 
 game = spaceGame(launch_word, launch_word_list, blank_counter)
 
-
-
-launching = True
-
-while launching:
-    test()
+while guessCount < 7:
+    # test()
     guess()
